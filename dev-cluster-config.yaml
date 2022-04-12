@@ -1,0 +1,32 @@
+apiVersion: k3d.io/v1alpha2
+kind: Simple
+servers: 2 
+agents: 2
+kubeAPI:
+  hostIP: "0.0.0.0"
+  hostPort: "6443"
+
+ports:
+  - port: 80:80 # http port host:container
+    nodeFilters:
+      - loadbalancer
+  - port: 0.0.0.0:443:443 # https port host:container
+    nodeFilters:
+      - loadbalancer
+
+options:
+  k3d:
+    wait: true
+    timeout: "60s"
+    disableLoadbalancer: false
+    disableImageVolume: false
+  k3s:
+    extraServerArgs: []
+#      - --tls-san=127.0.0.1
+#      - --no-deploy=traefik
+#      - --flannel-backend=none
+    extraAgentArgs: []
+  kubeconfig:
+    updateDefaultKubeconfig: true # update kubeconfig when cluster starts
+    switchCurrentContext: true    # change this cluster context whencluster starts
+
